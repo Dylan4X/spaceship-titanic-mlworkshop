@@ -61,6 +61,20 @@ DROP_LIST = [
 ]
 
 
+def find_data_dir(explicit: Path | None = None) -> Path:
+    """Find data whether CSVs are in ./data or directly beside the project files."""
+    candidates = []
+    if explicit is not None:
+        candidates.append(explicit)
+    script_root = Path(__file__).resolve().parents[1]
+    candidates.extend([Path.cwd() / "data", Path.cwd(), script_root / "data", script_root])
+    for path in candidates:
+        if (path / "train.csv").exists() and (path / "test.csv").exists() and (path / "sample_submission.csv").exists():
+            return path
+    checked = ", ".join(str(path) for path in candidates)
+    raise FileNotFoundError(f"Could not find train.csv, test.csv, and sample_submission.csv. Checked: {checked}")
+
+
 def make_one_hot_encoder() -> OneHotEncoder:
     try:
         return OneHotEncoder(handle_unknown="ignore", sparse_output=False)
@@ -184,7 +198,7 @@ def run_optuna_search(X: pd.DataFrame, y: pd.Series, n_trials: int) -> tuple[dic
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Reproduce the high-score XGBoost branch.")
-    parser.add_argument("--data-dir", type=Path, default=Path("data"), help="Directory containing train/test/sample CSVs.")
+    parser.add_argument("--data-dir", type=Path, default=None, help="Directory containing train/test/sample CSVs.")
     parser.add_argument("--output", type=Path, default=Path("submissions/Submission_XGB_demo.csv"))
     parser.add_argument("--metrics-output", type=Path, default=Path("experiments/tables/xgb_demo_run_metrics.json"))
     parser.add_argument("--n-trials", type=int, default=8, help="Small Optuna search size for the demo run.")
@@ -193,9 +207,10 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
-    train_df = pd.read_csv(args.data_dir / "train.csv")
-    test_df = pd.read_csv(args.data_dir / "test.csv")
-    sample_submission = pd.read_csv(args.data_dir / "sample_submission.csv")
+    data_dir = find_data_dir(args.data_dir)
+    train_df = pd.read_csv(data_dir / "train.csv")
+    test_df = pd.read_csv(data_dir / "test.csv")
+    sample_submission = pd.read_csv(data_dir / "sample_submission.csv")
 
     X_full, y, test_full, groups = build_compact_features(train_df, test_df)
     base_mean, base_std = cv_accuracy(XGB_BEST_PARAMS, X_full, y, n_splits=3)

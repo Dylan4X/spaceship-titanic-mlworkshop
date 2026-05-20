@@ -81,7 +81,7 @@
     "gradient_boosting": 0.010765032504210112,
     "logistic": 0.352948235335751
   },
-  "reference_path": "D:\\mlworkshop\\submission (3).csv",
+  "reference_path": "submissions/submission_reference.csv",
   "reference_true_count": 2194,
   "candidates": [
     {
@@ -172,6 +172,6 @@
     "test_true_count": 2194,
     "test_true_rate": 0.5129763853168109,
     "diff_vs_reference": 174,
-    "path": "D:\\mlworkshop\\submission_stacking_rebuild.csv"
+    "path": "submissions/submission_stacking_rebuild.csv"
   }
 }

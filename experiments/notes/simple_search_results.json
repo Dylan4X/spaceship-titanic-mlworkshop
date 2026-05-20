@@ -61,10 +61,10 @@
     "audit_delta_vs_default": 0.003105947313930768,
     "search_delta_vs_default": 0.004601403428045603,
     "full_fit_seed": 42,
-    "submission_path": "D:\\mlworkshop\\submission_simple_tuned.csv",
+    "submission_path": "submissions/submission_simple_tuned.csv",
     "submission_true_rate": 0.5073649754500819,
     "compare_to_best_known": {
-      "best_known_path": "D:\\mlworkshop\\submission (3).csv",
+      "best_known_path": "submissions/submission_reference.csv",
       "diff_count": 172,
       "diff_rate": 0.04021510404489128,
       "best_known_true_rate": 0.5129763853168109

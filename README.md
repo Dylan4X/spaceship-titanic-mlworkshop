@@ -10,7 +10,6 @@ This repository contains the cleaned final code, report assets, experiment evide
 - `report/`: final IEEE-style paper, figures, tables, and scripts used to regenerate report assets.
 - `experiments/`: preserved experiment notes and tables used by the paper.
 - `submissions/`: selected representative submission CSVs, not every intermediate attempt.
-- `references/`: original high-score reference notebook kept for auditability.
 
 ## Environment
 
@@ -26,6 +25,8 @@ python -m pip install -r requirements.txt
 ## Reproduce the XGBoost Demo Submission
 
 This command runs compact preprocessing, a small Optuna search, the final fixed-parameter XGBoost training step, and writes a Kaggle submission.
+
+The script automatically finds the official CSVs if they are either in `data/` or directly in the project root.
 
 ```powershell
 python code\reproduce_highscore_xgb.py --n-trials 8 --output submissions\Submission_XGB_demo_rerun.csv

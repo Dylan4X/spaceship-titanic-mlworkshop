@@ -64,7 +64,7 @@
     "fold_std": 0.013482853112456969,
     "oof_accuracy": 0.8139882664212584
   },
-  "submission_path": "D:\\mlworkshop\\submission_catboost.csv",
+  "submission_path": "submissions/submission_catboost.csv",
   "submission_true_rate": 0.5204582651391162,
   "reference_true_rate": 0.5129763853168109,
   "diff_vs_reference": 288

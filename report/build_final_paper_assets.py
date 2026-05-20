@@ -27,9 +27,8 @@ matplotlib.use("Agg")
 
 ROOT = Path(__file__).resolve().parent
 PROJECT_ROOT = ROOT.parent
-SUPPORT_ROOT = PROJECT_ROOT / "paper_support"
-DATA_DIR = SUPPORT_ROOT / "data"
-SOURCE_TABLE_DIR = SUPPORT_ROOT / "tables"
+DATA_DIR = PROJECT_ROOT / "data"
+SOURCE_TABLE_DIR = PROJECT_ROOT / "experiments" / "tables"
 
 TRAIN_PATH = DATA_DIR / "train.csv"
 TEST_PATH = DATA_DIR / "test.csv"
@@ -38,7 +37,7 @@ TABLE_DIR = ROOT / "tables"
 SUMMARY_JSON = ROOT / "paper_summary.json"
 
 KAGGLE_CONFIG_DIR = PROJECT_ROOT
-LEADERBOARD_DIR = PROJECT_ROOT / "leaderboard" / "unzipped"
+LEADERBOARD_DIR = PROJECT_ROOT / "references"
 
 TEAM_USERNAME = "dylanxue04"
 TEAM_NAME = "EAP_Hater@MLW"

@@ -20,8 +20,8 @@ matplotlib.use("Agg")
 
 ROOT = Path(__file__).resolve().parent
 PROJECT_ROOT = ROOT.parent
-DATA_DIR = PROJECT_ROOT / "paper_support" / "data"
-NOTE_DIR = PROJECT_ROOT / "paper_support" / "notes"
+DATA_DIR = PROJECT_ROOT / "data"
+NOTE_DIR = PROJECT_ROOT / "experiments" / "notes"
 FIG_DIR = ROOT / "figures"
 TABLE_DIR = ROOT / "tables"
 

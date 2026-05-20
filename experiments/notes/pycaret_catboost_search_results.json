@@ -134,7 +134,7 @@
       "verbose": false,
       "allow_writing_files": false
     },
-    "submission_path": "D:\\mlworkshop\\submission_catboost_pycaret_tuned.csv",
+    "submission_path": "submissions/submission_catboost_pycaret_tuned.csv",
     "submission_true_rate": 0.5127425765723638
   },
   "audited": [

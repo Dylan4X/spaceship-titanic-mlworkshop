@@ -16,3 +16,5 @@ kaggle.json
 *.sqlite3
 *.db
 submissions/Submission_XGB_demo_rerun.csv
+submissions/Submission_XGB_portable_check.csv
+experiments/tables/xgb_portable_check_metrics.json
