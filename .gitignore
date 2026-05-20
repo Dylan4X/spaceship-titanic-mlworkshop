@@ -2,6 +2,7 @@ __pycache__/
 *.py[cod]
 *.pyo
 .ipynb_checkpoints/
+*.executed.ipynb
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
@@ -16,5 +17,6 @@ kaggle.json
 *.sqlite3
 *.db
 submissions/Submission_XGB_demo_rerun.csv
+submissions/Submission_XGB_companion.csv
 submissions/Submission_XGB_portable_check.csv
 experiments/tables/xgb_portable_check_metrics.json

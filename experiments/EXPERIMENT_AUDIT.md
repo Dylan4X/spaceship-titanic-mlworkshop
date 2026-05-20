@@ -22,9 +22,10 @@ The highest-score XGBoost branch should still be presented as evidence-backed ra
 
 ## What Was Added for Demo Readiness
 
-- `code/reproduce_highscore_xgb.py`: command-line reproduction of the high-score XGBoost branch.
-- `notebooks/demo_repro_optuna_xgb_space_titanic.ipynb`: cleaned demo notebook.
-- The demo path now assumes `optuna` is installed and runs a small Optuna search by default.
+- `code/reproduce_0_814_notebook_exact.py`: command-line reproduction of the original `0-814` high-score XGBoost branch.
+- `notebooks/0_814_exact_reproduction_demo.ipynb`: VSCode classroom demo notebook with EDA removed but training cells preserved.
+- The demo notebook installs `requirements.txt` into the active kernel before importing `imblearn`, `xgboost`, and the other training dependencies.
+- The original notebook leaves several random sources unseeded, so the exact demo compares each generated CSV against `submissions/submission_xgb_reference_0814.csv` instead of claiming deterministic row-level equality on every machine.
 
 ## Remaining Non-Code Placeholders
 

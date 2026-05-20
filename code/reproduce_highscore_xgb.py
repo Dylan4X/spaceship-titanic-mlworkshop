@@ -1,9 +1,9 @@
-"""Reproduce the compact XGBoost branch used for the demo submission.
+"""Cleaned companion rerun for the compact XGBoost branch.
 
-This script is the command-line version of
-notebooks/demo_repro_optuna_xgb_space_titanic.ipynb. It keeps the original
-high-score branch intact, adds a small Optuna search for demonstration, then
-fits the final fixed-parameter XGBoost model and writes a Kaggle submission.
+This is useful for the supporting Optuna/neighborhood evidence. For the strict
+teacher-facing reproduction of `0-814-optuna-xgb-space-titanic.ipynb`, use
+`code/reproduce_0_814_notebook_exact.py` and
+`notebooks/0_814_exact_reproduction_demo.ipynb`.
 """
 
 from __future__ import annotations
@@ -199,7 +199,7 @@ def run_optuna_search(X: pd.DataFrame, y: pd.Series, n_trials: int) -> tuple[dic
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Reproduce the high-score XGBoost branch.")
     parser.add_argument("--data-dir", type=Path, default=None, help="Directory containing train/test/sample CSVs.")
-    parser.add_argument("--output", type=Path, default=Path("submissions/Submission_XGB_demo.csv"))
+    parser.add_argument("--output", type=Path, default=Path("submissions/Submission_XGB_companion.csv"))
     parser.add_argument("--metrics-output", type=Path, default=Path("experiments/tables/xgb_demo_run_metrics.json"))
     parser.add_argument("--n-trials", type=int, default=8, help="Small Optuna search size for the demo run.")
     return parser.parse_args()

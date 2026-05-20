@@ -6,7 +6,7 @@ This repository contains the cleaned final code, report assets, experiment evide
 
 - `code/`: runnable Python scripts for the final pipelines and supporting searches.
 - `data/`: official Kaggle `train.csv`, `test.csv`, and `sample_submission.csv`.
-- `notebooks/`: classroom demo notebook for the public-best compact XGBoost branch.
+- `notebooks/`: classroom demo notebook for the original `0-814` Optuna XGBoost branch.
 - `report/`: final IEEE-style paper, figures, tables, and scripts used to regenerate report assets.
 - `experiments/`: preserved experiment notes and tables used by the paper.
 - `submissions/`: selected representative submission CSVs, not every intermediate attempt.
@@ -22,31 +22,33 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
-## Reproduce the XGBoost Demo Submission
+## Reproduce the 0.814 XGBoost Branch
 
-This command runs compact preprocessing, a small Optuna search, the final fixed-parameter XGBoost training step, and writes a Kaggle submission.
+This is the strict reproduction path for `0-814-optuna-xgb-space-titanic.ipynb`. It keeps the original feature engineering, fixed Optuna-labeled XGBoost parameters, manual feature drop list, KMeansSMOTE step, and final submission export.
 
 The script automatically finds the official CSVs if they are either in `data/` or directly in the project root.
 
 ```powershell
-python code\reproduce_highscore_xgb.py --n-trials 8 --output submissions\Submission_XGB_demo_rerun.csv
+python code\reproduce_0_814_notebook_exact.py
 ```
 
 Expected run characteristics on the prepared local environment:
 
 - 27 processed features before pruning.
 - 15 features after manual pruning.
-- 8,666 rows retained by the IsolationForest diagnostic.
-- 8,762 rows after KMeansSMOTE.
-- Predicted true rate around `0.534`.
+- KMeansSMOTE class counts close to the original executed notebook's `4384` and `4378`; because the original SMOTE call is unseeded, reruns can differ slightly.
+- A generated submission at `submissions/Submission_XGB_exact.csv`.
+- A metrics/provenance file at `experiments/tables/notebook_0814_exact_run_metrics.json`.
+
+Important reproducibility note: the original notebook leaves `shuffle`, `KMeansSMOTE`, and the final `XGBClassifier` randomness unseeded. Therefore, different machines or package builds can produce small row-level differences. The repository includes `submissions/submission_xgb_reference_0814.csv` as the local highest-score reference CSV, and the exact script/notebook reports row-level differences against it instead of hiding the variance.
 
 ## Run the Demo Notebook
 
 ```powershell
-python -m jupyter nbconvert --to notebook --execute notebooks\demo_repro_optuna_xgb_space_titanic.ipynb --output demo_repro_optuna_xgb_space_titanic.executed.ipynb --ExecutePreprocessor.timeout=900
+python -m jupyter nbconvert --to notebook --execute notebooks\0_814_exact_reproduction_demo.ipynb --output 0_814_exact_reproduction_demo.executed.ipynb --ExecutePreprocessor.timeout=900
 ```
 
-The notebook is designed for teacher-facing presentation: it removes the original EDA-heavy clutter and keeps the training, tuning, and submission path visible.
+For a VSCode classroom demo, open `notebooks/0_814_exact_reproduction_demo.ipynb` and run from the first cell. The first cell installs `requirements.txt` into the active kernel, which fixes the common `ModuleNotFoundError: No module named 'imblearn'` issue when VSCode is using a different Python environment.
 
 ## Report Evidence
 

@@ -180,7 +180,7 @@ Categorical harmonization & Train and test concatenated before categorical imput
 Imputation logic & Mean imputation for numeric columns, most-frequent imputation for compact categorical set, plus room-guided filling for \texttt{VIP}, \texttt{Cabin}, \texttt{HomePlanet}, and \texttt{Destination} \\
 Compact branch features & 27 encoded features before pruning; 15 after pruning \\
 Outlier filtering & \texttt{IsolationForest} with contamination $=0.003$; 8,666 rows retained \\
-Class balancing & \texttt{KMeansSMOTE}; training rows increased to 8,761 \\
+Class balancing & \texttt{KMeansSMOTE}; training rows increased to 8,762 \\
 Final XGBoost setting & \texttt{max\_depth}=5, \texttt{n\_estimators}=725, \texttt{learning\_rate}=0.05, \texttt{subsample}=0.96, \texttt{colsample\_bytree}=0.93, \texttt{reg\_alpha}=4.582, \texttt{reg\_lambda}=3.06 \\
 \bottomrule
 \end{tabularx}
@@ -466,7 +466,7 @@ In conclusion, the project achieved both of its goals, but through different mod
 
 \section{Code Availability and Contribution Statement}
 \subsection{Code Availability}
-The final IEEE paper, generated figures, tables, and supporting scripts are organized under the \texttt{final\_ieee\_paper} workspace folder. The copied data, notes, and benchmark tables used to regenerate the report are organized under the \texttt{paper\_support} folder in the same project root. A verified GitHub repository URL is not present anywhere in the shared workspace at the time of writing, so the final institutional submission should replace the placeholder below with the team's actual repository:
+The final IEEE paper, generated figures, tables, supporting scripts, demo notebook, and reproducible code are organized in this repository. A verified GitHub repository URL should be inserted below before the final institutional submission:
 
 \begin{center}
 \texttt{<insert-team-github-repository-url-here>}
