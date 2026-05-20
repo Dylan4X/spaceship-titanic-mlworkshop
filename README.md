@@ -60,10 +60,13 @@ Key supporting tables are preserved in `experiments/tables/`:
 - `feature_ablation.csv`
 - `tuning_summary.csv`
 - `tuning_key_changes.csv`
+- `xgb_parameter_provenance.csv`
 - `xgb_branch_reconstruction.csv`
 - `xgb_neighborhood_search.csv`
 - `cv_vs_public.csv`
 - `pipeline_audit.csv`
+
+The XGBoost public-best branch should be explained as evidence-backed but not local-CV dominant: its parameters came from the original Optuna-labeled branch, the cleaned repo can rerun the pipeline, and the neighborhood search shows it sits in a reasonable tuned region.
 
 ## GitHub Submission Note
 

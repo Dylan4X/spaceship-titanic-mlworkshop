@@ -342,6 +342,8 @@ Public-best XGB branch & 0.80516 & 0.81716 & Best leaderboard branch & Highest p
 \subsection{The XGBoost Exploration Branch}
 The highest public score in the team history did not appear from a single isolated submission. It emerged through an XGBoost-centered exploration line. Figure~\ref{fig:xgb-branch} shows this trajectory. An early single XGBoost submission reached 0.79378 on April 1, 2026, a revised single-model version reached 0.80383 on April 10, 2026, XGBoost-assisted stacking reached 0.81084 on April 16, 2026, and the final public-best XGBoost branch reached 0.81716 on April 26, 2026.
 
+This distinction is important because we do not claim that the final XGBoost parameters are a magical local-CV optimum. Instead, we claim something narrower and more reproducible: the public-best branch is backed by a visible experimental provenance. The parameter set came from the Optuna-labeled compact XGBoost notebook that seeded this branch; the pipeline was then reconstructed as a standalone training path; a small Optuna rerun in the cleaned demo repository confirmed that nearby regularized XGBoost settings are plausible under the same compact feature space; and a focused neighborhood search showed that the final parameters lie inside a competitive plateau rather than far away from reasonable alternatives. Thus, the public-best submission should be read as an evidence-backed competition artifact, not as a parameter choice made by guesswork.
+
 \begin{figure*}[!t]
 \centering
 \includegraphics[width=0.96\textwidth]{xgb_branch_evolution.png}
