@@ -1,0 +1,17 @@
+model_family,parameter,baseline_value,winner_value,changed,audit_gain
+LightGBM,n_estimators,500.0,1000.0,True,0.003105947313930768
+LightGBM,learning_rate,0.03,0.03,False,0.003105947313930768
+LightGBM,num_leaves,31.0,15.0,True,0.003105947313930768
+LightGBM,max_depth,-1.0,6.0,True,0.003105947313930768
+LightGBM,subsample,0.9,1.0,True,0.003105947313930768
+LightGBM,colsample_bytree,0.8,1.0,True,0.003105947313930768
+LightGBM,reg_alpha,0.1,0.7,True,0.003105947313930768
+LightGBM,min_child_samples,25.0,35.0,True,0.003105947313930768
+CatBoost,iterations,1000.0,1000.0,False,0.002301297453465301
+CatBoost,learning_rate,0.02582800015807152,0.02582800015807152,False,0.002301297453465301
+CatBoost,depth,6.0,7.0,True,0.002301297453465301
+CatBoost,l2_leaf_reg,3.0,7.0,True,0.002301297453465301
+CatBoost,subsample,0.800000011920929,0.88,True,0.002301297453465301
+CatBoost,rsm,1.0,0.85,True,0.002301297453465301
+CatBoost,random_strength,1.0,0.5,True,0.002301297453465301
+CatBoost,min_data_in_leaf,1.0,8.0,True,0.002301297453465301

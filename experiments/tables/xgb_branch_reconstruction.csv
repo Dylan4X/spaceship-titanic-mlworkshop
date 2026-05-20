@@ -1,0 +1,5 @@
+stage,metric,accuracy,std
+Compact preprocessing branch,10-fold row-level reconstruction CV,0.804445193973784,0.01416909424516609
++ IsolationForest filtering,10-fold row-level reconstruction CV,0.8031430885083282,0.01590320920165601
++ Feature pruning,10-fold row-level reconstruction CV,0.8075515521870825,0.015422528357924998
+Strict group-aware audit,5-fold StratifiedGroupKFold,0.805161159694076,0.00490111024053958
