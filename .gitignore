@@ -13,6 +13,11 @@ catboost_info/
 *.zip
 kaggle.json
 *.log
+*.aux
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
 *.tmp
 *.sqlite3
 *.db
