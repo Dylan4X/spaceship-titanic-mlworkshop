@@ -18,6 +18,7 @@ kaggle.json
 *.toc
 *.fls
 *.fdb_latexmk
+report/final_ieee_paper.tex
 *.tmp
 *.sqlite3
 *.db
