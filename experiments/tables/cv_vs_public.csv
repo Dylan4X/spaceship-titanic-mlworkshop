@@ -1,6 +1,6 @@
 label,local_cv,public_score
 LightGBM baseline,0.81226,0.8064
-CatBoost exact,0.8133,0.81061
-Flaykaer reproduction,0.81422,0.80991
-Opamusora clean,0.81905,0.80593
+Clean CatBoost single model,0.8133,0.81061
+Clean CatBoost reproduction,0.81422,0.80991
+High-CV CatBoost candidate,0.81905,0.80593
 Public-best XGB branch,0.805161159694076,0.81716

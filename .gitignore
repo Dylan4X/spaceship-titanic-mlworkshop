@@ -19,4 +19,6 @@ kaggle.json
 submissions/Submission_XGB_demo_rerun.csv
 submissions/Submission_XGB_companion.csv
 submissions/Submission_XGB_portable_check.csv
+submissions/Submission_XGB_0_81716.csv
+notebooks/Submission_XGB_0_81716.csv
 experiments/tables/xgb_portable_check_metrics.json

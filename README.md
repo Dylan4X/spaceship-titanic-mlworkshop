@@ -1,15 +1,18 @@
 # AI3023 ML Workshop: Spaceship Titanic
 
-This repository contains the cleaned final code, report assets, experiment evidence, and reproducible demo for our AI3023 Machine Learning Workshop Spaceship Titanic project.
+This repository contains the final report, supporting experiment evidence, and the reproducible XGBoost pipeline for our AI3023 Machine Learning Workshop project on Kaggle Spaceship Titanic.
 
-## Project Structure
+The public-best branch reached a Kaggle public score of `0.81716` for team `EAP_Hater@MLW`.
 
-- `code/`: runnable Python scripts for the final pipelines and supporting searches.
-- `data/`: official Kaggle `train.csv`, `test.csv`, and `sample_submission.csv`.
-- `notebooks/`: classroom demo notebook for the original `0-814` Optuna XGBoost branch.
-- `report/`: final IEEE-style paper, figures, tables, and scripts used to regenerate report assets.
-- `experiments/`: preserved experiment notes and tables used by the paper.
-- `submissions/`: selected representative submission CSVs, not every intermediate attempt.
+## Repository Layout
+
+- `code/reproduce_081716_xgb.py`: script version of the final public-best XGBoost pipeline.
+- `notebooks/demo_081716_xgb.ipynb`: Kaggle-first demo notebook for reproducing the final submission.
+- `data/`: official Kaggle CSV files for local reproduction.
+- `report/`: final IEEE-style report, PDF, and figures.
+- `experiments/tables/`: compact experiment evidence used by the report.
+
+Older search scripts, scratch notebooks, and intermediate submissions are intentionally removed so the repository stays focused and easy to review.
 
 ## Environment
 
@@ -22,55 +25,53 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
-## Reproduce the 0.814 XGBoost Branch
+## Reproduce the Final Submission on Kaggle
 
-This is the strict reproduction path for `0-814-optuna-xgb-space-titanic.ipynb`. It keeps the original feature engineering, fixed Optuna-labeled XGBoost parameters, manual feature drop list, KMeansSMOTE step, and final submission export.
+Recommended for demo and grading:
 
-The script automatically finds the official CSVs if they are either in `data/` or directly in the project root.
+1. Open Kaggle for the Spaceship Titanic competition.
+2. Upload or paste `notebooks/demo_081716_xgb.ipynb`.
+3. Run all cells.
+4. Submit `/kaggle/working/Submission_XGB_0_81716.csv`.
+
+The final XGBoost configuration is:
+
+- Seed: `36086`
+- Resampling: `KMeansSMOTE(sampling_strategy=1, n_jobs=-1)`
+- `lambda=3.06`
+- `alpha=4.582`
+- `colsample_bytree=0.93`
+- `subsample=0.96`
+- `n_estimators=950`
+- `max_depth=5`
+- `learning_rate=0.0475`
+
+## Reproduce Locally
+
+The script automatically finds the CSV files in either `data/` or the current directory.
 
 ```powershell
-python code\reproduce_0_814_notebook_exact.py
+python code\reproduce_081716_xgb.py
 ```
 
-Expected run characteristics on the prepared local environment:
+Expected local output:
 
-- 27 processed features before pruning.
-- 15 features after manual pruning.
-- KMeansSMOTE class counts close to the original executed notebook's `4384` and `4378`; because the original SMOTE call is unseeded, reruns can differ slightly.
-- A generated submission at `submissions/Submission_XGB_exact.csv`.
-- A metrics/provenance file at `experiments/tables/notebook_0814_exact_run_metrics.json`.
-
-Important reproducibility note: the original notebook leaves `shuffle`, `KMeansSMOTE`, and the final `XGBClassifier` randomness unseeded. Therefore, different machines or package builds can produce small row-level differences. The repository includes `submissions/submission_xgb_reference_0814.csv` as the local highest-score reference CSV, and the exact script/notebook reports row-level differences against it instead of hiding the variance.
-
-## Run the Demo Notebook
-
-```powershell
-python -m jupyter nbconvert --to notebook --execute notebooks\0_814_exact_reproduction_demo.ipynb --output 0_814_exact_reproduction_demo.executed.ipynb --ExecutePreprocessor.timeout=900
-```
-
-For a VSCode classroom demo, open `notebooks/0_814_exact_reproduction_demo.ipynb` and run from the first cell. The first cell installs `requirements.txt` into the active kernel, which fixes the common `ModuleNotFoundError: No module named 'imblearn'` issue when VSCode is using a different Python environment.
+- `submissions/Submission_XGB_0_81716.csv`
+- Resampled class counts close to `{0: 4384, 1: 4378}`
+- Prediction counts close to `{True: 2285, False: 1992}`
 
 ## Report Evidence
 
-The paper in `report/final_ieee_paper.pdf` separates two ideas:
+The report separates two claims:
 
-- CatBoost is the clean scientific anchor under the validation-first benchmark.
-- The compact XGBoost branch is the public-leaderboard best branch.
+- The clean CatBoost line is the strongest validation-first scientific anchor.
+- The compact XGBoost branch is the public-best competition branch.
 
-Key supporting tables are preserved in `experiments/tables/`:
+Supporting evidence is preserved in `experiments/tables/`, including model benchmarks, feature ablation, tuning summaries, CV-vs-public comparisons, and XGBoost branch reconstruction.
 
-- `model_benchmark.csv`
-- `feature_ablation.csv`
-- `tuning_summary.csv`
-- `tuning_key_changes.csv`
-- `xgb_parameter_provenance.csv`
-- `xgb_branch_reconstruction.csv`
-- `xgb_neighborhood_search.csv`
-- `cv_vs_public.csv`
-- `pipeline_audit.csv`
+## Final Report
 
-The XGBoost public-best branch should be explained as evidence-backed but not local-CV dominant: its parameters came from the original Optuna-labeled branch, the cleaned repo can rerun the pipeline, and the neighborhood search shows it sits in a reasonable tuned region.
+- PDF: `report/final_ieee_paper.pdf`
+- Source: `report/final_ieee_paper.tex`
 
-## GitHub Submission Note
-
-Before the final institutional submission, replace the GitHub placeholder inside `report/final_ieee_paper.tex` with the actual repository URL and rebuild/export the PDF if required by the instructor.
+Before final submission, replace `<team-github-repository-url>` in `report/final_ieee_paper.tex` with the actual GitHub URL and rebuild the PDF.

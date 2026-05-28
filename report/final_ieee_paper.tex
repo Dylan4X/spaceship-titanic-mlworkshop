@@ -17,10 +17,13 @@
 \title{Validation-First Modeling and Competition-Side XGBoost Exploration for the Kaggle Spaceship Titanic Benchmark}
 
 \author{
-\IEEEauthorblockN{Team EAP\_Hater@MLW}
+\IEEEauthorblockN{Dingrong Xue, Fan Xie, and Shijun Cheng}
 \IEEEauthorblockA{
-Kaggle usernames: \texttt{cccccsj}, \texttt{dylanxue04}, \texttt{xiefan666} \\
-Replace Kaggle usernames with official student names and IDs before the final institutional submission.
+Artificial Intelligence Programme, Department of Computer Science \\
+Faculty of Science and Technology \\
+Beijing Normal-Hong Kong Baptist University (BNBU), Zhuhai, China \\
+Team \texttt{EAP\_Hater@MLW}; Corresponding author: Dingrong Xue \\
+\texttt{u430034083@mail.bnbu.edu.cn}
 }
 }
 
@@ -28,7 +31,7 @@ Replace Kaggle usernames with official student names and IDs before the final in
 \maketitle
 
 \begin{abstract}
-This paper reports our final AI3023 course project on the Kaggle \emph{Spaceship Titanic} competition. The task is a binary classification problem on mixed-type tabular data: predict whether a passenger was transported to an alternate dimension using demographics, cabin assignments, spending behavior, and travel-group identifiers. We deliberately separate two goals that often get conflated in beginner Kaggle projects: obtaining a competitive leaderboard result and producing a defensible machine learning study. To do this, we benchmark five machine learning models under a repeated group-aware validation protocol, build an EDA-driven feature space, and separately analyze a competition-side XGBoost branch that produced the team's highest public score. The clean local benchmark identifies CatBoost as the strongest scientific anchor, while XGBoost offers the best speed-performance compromise and ultimately yields the best public leaderboard result through a more aggressive compact-feature branch. We also show, through shared-audit subgroup disagreement analysis, that the public-best XGBoost branch is specialized rather than uniformly superior to the cleaner CatBoost line. In the public leaderboard snapshot downloaded on May 17, 2026, our team \texttt{EAP\_Hater@MLW} ranked 97th out of 2240 teams with a score of 0.81716, while our best clean single-model submission ranked 238th with a score of 0.81061. The main conclusion is that for a highly exposed getting-started dataset such as \emph{Spaceship Titanic}, rigorous validation, ablation, and reproducibility are more important to the final report than blindly pursuing tiny public-leaderboard gains.
+This paper reports our final AI3023 course project on the Kaggle \emph{Spaceship Titanic} competition. The task is a binary classification problem on mixed-type tabular data: predict whether a passenger was transported to an alternate dimension using demographics, cabin assignments, spending behavior, and travel-group identifiers. We deliberately separate two goals that are often conflated in competition projects: obtaining a competitive leaderboard result and producing a defensible machine learning study. To do this, we benchmark five machine learning models under a repeated group-aware validation protocol, build an EDA-driven feature space, and separately analyze a competition-side XGBoost branch that produced the team's highest public score. The clean local benchmark identifies CatBoost as the strongest scientific anchor, while XGBoost offers the best speed-performance compromise and ultimately yields the best public leaderboard result through a more aggressive compact-feature branch. We also show, through shared-audit subgroup disagreement analysis, that the public-best XGBoost branch is specialized rather than uniformly superior to the cleaner CatBoost line. In the public leaderboard snapshot downloaded on May 17, 2026, our team \texttt{EAP\_Hater@MLW} ranked 97th out of 2240 teams with a score of 0.81716, while our best clean single-model submission ranked 238th with a score of 0.81061. The main conclusion is that for a highly studied benchmark such as \emph{Spaceship Titanic}, rigorous validation, ablation, and reproducibility are more important to the final analysis than optimizing solely for marginal public-leaderboard gains.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -36,7 +39,7 @@ Kaggle, tabular classification, CatBoost, XGBoost, feature engineering, cross-va
 \end{IEEEkeywords}
 
 \section{Introduction}
-The AI3023 course project requires each team to compete on Kaggle while also submitting a complete machine learning report, code archive, and presentation. This dual requirement creates a useful tension. Kaggle encourages rapid iteration against a live public leaderboard, but the course rubric rewards methodological quality, reproducibility, sound comparison, and the ability to explain why a pipeline works. On a popular getting-started dataset such as \emph{Spaceship Titanic}, those two incentives are related but not identical.
+The AI3023 course project requires each team to compete on Kaggle while also submitting a complete machine learning report, code archive, and presentation. This dual requirement creates a useful tension. Kaggle encourages rapid iteration against a live public leaderboard, but the course rubric rewards methodological quality, reproducibility, sound comparison, and the ability to explain why a pipeline works. On a widely used benchmark dataset such as \emph{Spaceship Titanic}, those two incentives are related but not identical.
 
 This distinction mattered strongly in our project. The competition already has many public notebooks, minor feature variations, and leaderboard-oriented tricks. As a result, a higher public score does not automatically imply a better scientific story. We therefore treated the project as a validation-first machine learning study, while still documenting the competition-side branch that produced the team's highest public result.
 
@@ -165,7 +168,7 @@ Tuning strategy depended on the role of each model. The validation-first benchma
 \item as a separate competition-side branch designed to maximize public leaderboard performance.
 \end{enumerate}
 
-The competition-side XGBoost branch intentionally relaxes some of the cleanliness constraints of the main benchmark. It concatenates train and test during categorical harmonization, performs room-guided imputation, reduces the encoded feature space from 27 to 15 dimensions through manual pruning, and finally trains a regularized XGBoost model with \texttt{max\_depth}=5, \texttt{n\_estimators}=725, \texttt{learning\_rate}=0.05, \texttt{subsample}=0.96, \texttt{colsample\_bytree}=0.93, \texttt{reg\_alpha}=4.582, and \texttt{reg\_lambda}=3.06. We report this branch separately because it was optimized for competition performance, not because it is the cleanest scientific baseline.
+The competition-side XGBoost branch intentionally relaxes some of the cleanliness constraints of the main benchmark. It concatenates train and test during categorical harmonization, performs room-guided imputation, reduces the encoded feature space from 27 to 15 dimensions through manual pruning, balances the training matrix using \texttt{KMeansSMOTE}, and finally trains a regularized XGBoost model. The final public-best setting used random seed 36086, \texttt{max\_depth}=5, \texttt{n\_estimators}=950, \texttt{learning\_rate}=0.0475, \texttt{subsample}=0.96, \texttt{colsample\_bytree}=0.93, \texttt{reg\_alpha}=4.582, and \texttt{reg\_lambda}=3.06. We report this branch separately because it was optimized for competition performance, not because it is the cleanest scientific baseline.
 
 \begin{table}[!t]
 \caption{Competition-side XGBoost branch configuration}
@@ -179,9 +182,9 @@ Component & Setting \\
 Categorical harmonization & Train and test concatenated before categorical imputation and one-hot alignment \\
 Imputation logic & Mean imputation for numeric columns, most-frequent imputation for compact categorical set, plus room-guided filling for \texttt{VIP}, \texttt{Cabin}, \texttt{HomePlanet}, and \texttt{Destination} \\
 Compact branch features & 27 encoded features before pruning; 15 after pruning \\
-Outlier filtering & \texttt{IsolationForest} with contamination $=0.003$; 8,666 rows retained \\
+Outlier diagnostic & \texttt{IsolationForest} with contamination $=0.003$ was evaluated during branch reconstruction but not used in the final submitted training matrix \\
 Class balancing & \texttt{KMeansSMOTE}; training rows increased to 8,762 \\
-Final XGBoost setting & \texttt{max\_depth}=5, \texttt{n\_estimators}=725, \texttt{learning\_rate}=0.05, \texttt{subsample}=0.96, \texttt{colsample\_bytree}=0.93, \texttt{reg\_alpha}=4.582, \texttt{reg\_lambda}=3.06 \\
+Final XGBoost setting & seed 36086; \texttt{max\_depth}=5, \texttt{n\_estimators}=950, \texttt{learning\_rate}=0.0475, \texttt{subsample}=0.96, \texttt{colsample\_bytree}=0.93, \texttt{reg\_alpha}=4.582, \texttt{reg\_lambda}=3.06 \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -189,7 +192,7 @@ Final XGBoost setting & \texttt{max\_depth}=5, \texttt{n\_estimators}=725, \text
 \subsection{Experimental Controls and Reproducibility}
 To keep the report defensible, we maintained several controls across the validation-first benchmark. All unified model comparisons used the same feature families, the same group-aware split design, the same fixed threshold on audit seeds, and no external prediction files. This makes the benchmark table interpretable as a true model-family comparison rather than a comparison between unrelated pipelines.
 
-We also maintained separate tuning evidence for the clean benchmark models. In the copied workspace logs, the LightGBM random-search winner improved audit accuracy by +0.0031 over the default baseline, while the best CatBoost sweep improved audit accuracy by +0.0023. We report these gains explicitly later because the course brief requires hyperparameter tuning to be demonstrated rather than merely asserted.
+We also maintained separate tuning evidence for the clean benchmark models. The LightGBM random-search winner improved audit accuracy by +0.0031 over the default baseline, while the best CatBoost sweep improved audit accuracy by +0.0023. We report these gains explicitly later because the course brief requires hyperparameter tuning to be demonstrated rather than merely asserted.
 
 We deliberately isolated the competition-side XGBoost branch from this benchmark. Its purpose was different: maximize public leaderboard score within the official competition rules. By separating the two tracks, we avoided a common failure mode in course reports where a leaderboard-oriented branch silently becomes the ``best model'' even when it is no longer the cleanest scientific baseline.
 
@@ -276,15 +279,15 @@ To test whether every plausible feature family was actually helpful, we ran a cu
 \label{fig:feature-ablation}
 \end{figure}
 
-The pattern is more informative than a simple ``more features is better'' narrative. Raw official features alone reached only 0.7973. Adding cabin decomposition raised group-aware CV to 0.8125, which was the largest jump in the entire study. Adding group features kept performance near the same level, while spend-summary and rule-consistency features provided no further gain under this fixed CatBoost setting and slightly reduced the final mean. This does not mean that group or spend information is useless. Rather, under this particular CatBoost configuration, those later families are partly redundant with the already strong cabin-enhanced core representation instead of being additively beneficial. That finding supports our conservative promotion rule and shows that the final report is not based on blind feature accumulation.
+The pattern is more informative than a simple monotonic feature-accumulation narrative. Raw official features alone reached only 0.7973. Adding cabin decomposition raised group-aware CV to 0.8125, which was the largest jump in the entire study. Adding group features kept performance near the same level, while spend-summary and rule-consistency features provided no further gain under this fixed CatBoost setting and slightly reduced the final mean. This does not mean that group or spend information is useless. Rather, under this particular CatBoost configuration, those later families are partly redundant with the already strong cabin-enhanced core representation instead of being additively beneficial. That finding supports our conservative promotion rule and shows that the final report is not based on indiscriminate feature accumulation.
 
 \subsection{Tuning Evidence on Clean Models}
-Figure~\ref{fig:tuning-summary} summarizes the audited gains from the two clean-model tuning tracks that were preserved in the workspace notes.
+Figure~\ref{fig:tuning-summary} summarizes the audited gains from the two clean-model tuning tracks retained for the final analysis.
 
 \begin{figure}[!t]
 \centering
 \includegraphics[width=\columnwidth]{tuning_summary.png}
-\caption{Audited tuning gains for the clean LightGBM and CatBoost search tracks preserved in the local experiment logs.}
+\caption{Audited tuning gains for the clean LightGBM and CatBoost search tracks retained for the final analysis.}
 \label{fig:tuning-summary}
 \end{figure}
 
@@ -293,7 +296,7 @@ The LightGBM search track improved audit accuracy by +0.0031 over its default ba
 Table~\ref{tab:tuning-key-changes} makes the tuning path more concrete. The winning LightGBM candidate became smaller in leaf capacity, deeper in explicit tree depth, and more conservative through stronger regularization and larger minimum leaf size. The winning CatBoost candidate moved in a similar direction: slightly deeper trees, stronger $L_2$ regularization, modest subsampling, and less aggressive feature sampling noise. In other words, the preserved search evidence points to disciplined regularization and capacity control rather than to exotic hyperparameter tricks.
 
 \begin{table*}[!t]
-\caption{Key hyperparameter changes preserved in the clean tuning logs}
+\caption{Key hyperparameter changes retained from the clean tuning records}
 \label{tab:tuning-key-changes}
 \centering
 \scriptsize
@@ -308,16 +311,16 @@ CatBoost & depth 6, \texttt{l2\_leaf\_reg}=3, \texttt{subsample}=0.80, \texttt{r
 \end{table*}
 
 \subsection{Validation Alignment versus Public Leaderboard}
-One of the central findings of the project is that local validation and public leaderboard behavior do not align monotonically. Figure~\ref{fig:cv-public} shows this directly. The most striking counterexample is the clean \texttt{Opamusora} CatBoost candidate, which reached 0.81905 under local group-aware validation but only 0.80593 publicly. The inverse pattern is the team's public-best XGBoost branch, which achieved only 0.80516 under our strict group-aware audit but scored 0.81716 on the public leaderboard.
+One of the central findings of the project is that local validation and public leaderboard behavior do not align monotonically. Figure~\ref{fig:cv-public} shows this directly. The most striking counterexample is a high-CV CatBoost candidate, which reached 0.81905 under local group-aware validation but only 0.80593 publicly. The inverse pattern is the team's public-best XGBoost branch, which achieved only 0.80516 under our strict group-aware audit but scored 0.81716 on the public leaderboard.
 
 \begin{figure}[!t]
 \centering
 \includegraphics[width=\columnwidth]{cv_vs_public.png}
-\caption{Local validation does not monotonically predict public leaderboard score. This is why the report emphasizes validation design and ablation rather than public-score chasing alone.}
+\caption{Local validation does not monotonically predict public leaderboard score. This is why the report emphasizes validation design and ablation rather than public-score optimization alone.}
 \label{fig:cv-public}
 \end{figure}
 
-This mismatch changed our workflow. First, we stopped trusting tiny local improvements unless they survived the audit seeds. Second, we separated the best clean single model from the best public submission instead of forcing one narrative to explain both. The best clean single model in the workspace remains the CatBoost exact pipeline, which scored 0.81061 publicly and is straightforward to explain. The best public result belongs to a different XGBoost branch with a different objective.
+This mismatch changed our workflow. First, we stopped trusting small local improvements unless they survived the audit seeds. Second, we separated the best clean single model from the best public submission instead of forcing one narrative to explain both. The best clean single model is the CatBoost pipeline, which scored 0.81061 publicly and is straightforward to explain. The best public result belongs to a different XGBoost branch with a different objective.
 
 Table~\ref{tab:representative-lines} summarizes the candidate lines that mattered most to this conclusion. The table is useful because it separates three different concepts that are easy to blur together in a Kaggle report: the strongest clean scientific anchor, the strongest local-CV counterexample, and the strongest public-leaderboard branch.
 
@@ -331,9 +334,9 @@ Table~\ref{tab:representative-lines} summarizes the candidate lines that mattere
 Candidate line & Local metric & Public score & Role in the project & Main lesson \\
 \midrule
 LightGBM baseline & 0.81226 & 0.80640 & Early validation-first baseline & Useful baseline for promotion decisions, but not strong enough as a final competition submission. \\
-CatBoost exact & 0.81330 & 0.81061 & Best clean single-model anchor & The most defensible report centerpiece: strong score, simple preprocessing, and high interpretability. \\
-Flaykaer reproduction & 0.81422 & 0.80991 & Transparent clean reproduction & Good example of a respectable public reproduction that still failed to beat the clean anchor. \\
-Opamusora clean & 0.81905 & 0.80593 & High-CV counterexample & Strongest evidence that local group-aware CV alone is not a dependable public-score ranker near the top of this competition. \\
+Clean CatBoost single model & 0.81330 & 0.81061 & Best clean single-model anchor & The most defensible report centerpiece: strong score, simple preprocessing, and high interpretability. \\
+Clean CatBoost reproduction & 0.81422 & 0.80991 & Transparent clean reproduction & A respectable public reproduction that still failed to beat the clean anchor. \\
+High-CV CatBoost candidate & 0.81905 & 0.80593 & High-CV counterexample & Strongest evidence that local group-aware CV alone is not a dependable public-score ranker near the top of this competition. \\
 Public-best XGB branch & 0.80516 & 0.81716 & Best leaderboard branch & Highest public result, but not the strongest scientific baseline; must be explained as a separate competition-side line. \\
 \bottomrule
 \end{tabularx}
@@ -342,7 +345,7 @@ Public-best XGB branch & 0.80516 & 0.81716 & Best leaderboard branch & Highest p
 \subsection{The XGBoost Exploration Branch}
 The highest public score in the team history did not appear from a single isolated submission. It emerged through an XGBoost-centered exploration line. Figure~\ref{fig:xgb-branch} shows this trajectory. An early single XGBoost submission reached 0.79378 on April 1, 2026, a revised single-model version reached 0.80383 on April 10, 2026, XGBoost-assisted stacking reached 0.81084 on April 16, 2026, and the final public-best XGBoost branch reached 0.81716 on April 26, 2026.
 
-This distinction is important because we do not claim that the final XGBoost parameters are a magical local-CV optimum. Instead, we claim something narrower and more reproducible: the public-best branch is backed by a visible experimental provenance. The parameter set came from the Optuna-labeled compact XGBoost notebook that seeded this branch; the pipeline was then reconstructed as a standalone training path; a small Optuna rerun in the cleaned demo repository confirmed that nearby regularized XGBoost settings are plausible under the same compact feature space; and a focused neighborhood search showed that the final parameters lie inside a competitive plateau rather than far away from reasonable alternatives. Thus, the public-best submission should be read as an evidence-backed competition artifact, not as a parameter choice made by guesswork.
+This distinction is important because we do not claim that the final XGBoost parameters are a unique local-CV optimum. Instead, we claim something narrower and more reproducible: the public-best branch is backed by visible experimental provenance. The parameter set began from an Optuna-guided compact XGBoost branch; the preprocessing, manual feature pruning, and \texttt{KMeansSMOTE} design were then retained as fixed branch decisions; and a focused competition-side search adjusted the tree count, learning rate, and random seed. The final public-best setting used 950 trees, a learning rate of 0.0475, and seed 36086, while retaining the earlier regularization and sampling choices. A local neighborhood search further showed that the final branch lies inside a competitive plateau rather than far away from reasonable alternatives. Thus, the public-best submission should be read as an evidence-backed competition artifact, not as an unsupported parameter choice.
 
 \begin{figure*}[!t]
 \centering
@@ -351,7 +354,7 @@ This distinction is important because we do not claim that the final XGBoost par
 \label{fig:xgb-branch}
 \end{figure*}
 
-To understand why the final branch worked, we reconstructed it in stages and measured how its local behavior changed. Table~\ref{tab:xgb-stage} reports the result. The compact preprocessing branch itself only reached 0.80445 under 10-fold row-level reconstruction CV. IsolationForest filtering actually made this reconstruction metric worse, while feature pruning raised it to 0.80755. Re-evaluated under our stricter 5-fold \texttt{StratifiedGroupKFold} audit, the same branch scored 0.80516.
+To understand why the final branch worked, we reconstructed it in stages and measured how its local behavior changed. Table~\ref{tab:xgb-stage} reports the result. The compact preprocessing branch itself only reached 0.80445 under 10-fold row-level reconstruction CV. The \texttt{IsolationForest} diagnostic made this reconstruction metric worse when treated as a filtering step, while feature pruning raised it to 0.80755. Re-evaluated under our stricter 5-fold \texttt{StratifiedGroupKFold} audit, the same branch scored 0.80516.
 
 \begin{table*}[!t]
 \caption{Stage-wise reconstruction of the final XGBoost branch}
@@ -363,14 +366,14 @@ To understand why the final branch worked, we reconstructed it in stages and mea
 Stage & Validation view & Accuracy & Std. dev. & Interpretation \\
 \midrule
 Compact preprocessing branch & 10-fold row-level reconstruction CV & 0.80445 & 0.01417 & A workable but not yet competitive compact XGBoost baseline. \\
-+ IsolationForest filtering & 10-fold row-level reconstruction CV & 0.80314 & 0.01590 & Outlier filtering did not help locally and would not have been promoted on a scientific track. \\
++ IsolationForest diagnostic & 10-fold row-level reconstruction CV & 0.80314 & 0.01590 & Outlier filtering did not help locally and was not used in the final submitted training matrix. \\
 + Feature pruning & 10-fold row-level reconstruction CV & 0.80755 & 0.01542 & Manual pruning recovered a clearer gain and created the final compact branch used for the public-best submission. \\
 Strict group-aware audit & 5-fold StratifiedGroupKFold & 0.80516 & 0.00490 & Under the stricter report-standard audit, the branch remains weaker than the clean CatBoost anchor despite its public success. \\
 \bottomrule
 \end{tabularx}
 \end{table*}
 
-Table~\ref{tab:xgb-milestones} makes the public-side evolution explicit. The rejected tuned XGBoost variant on April 10, 2026 is especially informative: tuning alone did not help, and the real breakthrough came only after the project explored XGBoost as part of a broader competition branch rather than as a naive single-model replacement.
+Table~\ref{tab:xgb-milestones} makes the public-side evolution explicit. The rejected tuned XGBoost variant on April 10, 2026 is especially informative: parameter changes alone did not help, and the decisive improvement came only after the project explored XGBoost as part of a broader competition branch rather than as a direct single-model replacement.
 
 \begin{table*}[!t]
 \caption{Milestones in the XGBoost exploration branch}
@@ -390,7 +393,7 @@ Date & Milestone & Public score & Why it mattered \\
 \end{tabularx}
 \end{table*}
 
-We also ran a focused local neighborhood search around the final branch parameters to test whether the public-best configuration was at least locally competitive under standard validation. Figure~\ref{fig:xgb-neighborhood} shows the result. Row-level CV slightly preferred a lower learning rate with more trees, while the group-aware audit slightly preferred a leaner sampling setting. However, all tested variants stayed within a narrow accuracy band, and none emerged as a dominant local winner under both views simultaneously.
+We also ran a focused local neighborhood search around the branch parameters to test whether the public-best configuration was at least locally competitive under standard validation. Figure~\ref{fig:xgb-neighborhood} shows the result. Row-level CV slightly preferred a lower learning rate with more trees, while the group-aware audit slightly preferred a leaner sampling setting. However, all tested variants stayed within a narrow accuracy band, and none emerged as a dominant local winner under both views simultaneously.
 
 \begin{figure}[!t]
 \centering
@@ -399,9 +402,9 @@ We also ran a focused local neighborhood search around the final branch paramete
 \label{fig:xgb-neighborhood}
 \end{figure}
 
-This is an important result for the logic of the paper. It means the final public-best XGBoost branch should not be oversold as the unique locally optimal model. A more honest interpretation is that it lies inside a competitive parameter region, and its public superiority depends on leaderboard interaction in a way that local CV does not fully explain. That framing is much stronger academically than claiming a tuning triumph that the local evidence does not support.
+This is an important result for the logic of the paper. It means the final public-best XGBoost branch should not be described as the unique locally optimal model. A more precise interpretation is that it lies inside a competitive parameter region, and its public superiority depends on leaderboard interaction in a way that local CV does not fully explain. This framing is more defensible than claiming a tuning result that the local evidence does not support.
 
-Two points follow from this table. First, the final branch is not a single miraculous parameter point; it is the endpoint of a longer XGBoost exploration line in our own submission history. Second, the branch is best interpreted as a competition-side artifact rather than as our strongest scientific baseline. Its public success is real, but the strongest methodological claim of the paper still comes from the validation-first benchmark.
+Two points follow from this table. First, the final branch is not an isolated parameter point; it is the endpoint of a longer XGBoost exploration line in our own submission history. Second, the branch is best interpreted as a competition-side artifact rather than as our strongest scientific baseline. Its public success is real, but the strongest methodological claim of the paper still comes from the validation-first benchmark.
 
 \subsection{Where the Two Branches Disagree}
 The previous subsection explains why the public-best XGBoost branch should not be described as a universal local optimum. A complementary question is whether it at least behaves like a uniformly stronger classifier than the cleaner CatBoost line. Under one shared 5-fold \texttt{StratifiedGroupKFold} audit, the answer is no. The two branches disagree on 8.49\% of training rows, and the cleaner CatBoost line keeps a 0.37-point accuracy advantage overall under that shared audit.
@@ -444,44 +447,38 @@ Figure~\ref{fig:timeline} shows the overall public-score trajectory, while Figur
 \section{Discussion}
 Three lessons are worth emphasizing.
 
-First, \emph{Spaceship Titanic} is not a good setting for uncritical leaderboard chasing if the goal is an academically strong report. Because the dataset is small and highly exposed, public-score changes can reflect split-specific behavior rather than reliable generalization. This concern is consistent with prior work on leaderboard reliability, which treats repeated public-score interaction as a genuine evaluation problem rather than a harmless convenience \cite{ladder}.
+First, \emph{Spaceship Titanic} is not a good setting for uncritical public-score optimization if the goal is an academically strong report. Because the dataset is small and highly exposed, public-score changes can reflect split-specific behavior rather than reliable generalization. This concern is consistent with prior work on leaderboard reliability, which treats repeated public-score interaction as a genuine evaluation problem rather than a harmless convenience \cite{ladder}.
 
-Second, the strongest clean single-model pipeline and the strongest public-scoring pipeline are not the same object. The CatBoost exact line is the best narrative anchor for a classroom report because it is transparent, stable, and easy to justify. The public-best XGBoost branch is the correct competition artifact because it demonstrably delivered the highest team score. Treating these two roles separately resolves the main tension in the project.
+Second, the strongest clean single-model pipeline and the strongest public-scoring pipeline are not the same object. The clean CatBoost single-model line is the best narrative anchor for a classroom report because it is transparent, stable, and easy to justify. The public-best XGBoost branch is the correct competition artifact because it demonstrably delivered the highest team score. Treating these two roles separately resolves the main tension in the project.
 
-Third, the most valuable scientific contribution of the work is the validation framework itself. The repeated group-aware design, the split between search seeds and audit seeds, and the refusal to promote 0.000x gains without wider checking all made the project more trustworthy. On this dataset, that discipline is more important than any last 0.00x leaderboard fluctuation.
+Third, the most valuable scientific contribution of the work is the validation framework itself. The repeated group-aware design, the split between search seeds and audit seeds, and the refusal to promote sub-thousandth gains without wider checking all made the project more trustworthy. On this dataset, that discipline is more important than small public-score fluctuations.
 
 \section{Threats to Validity}
-This project has three main validity threats.
+This project has four main validity threats.
 
 First, the public leaderboard is only a partial view of the hidden Kaggle test set. Even a real public gain may not transfer perfectly to the private split. This is why the paper does not equate public-best score with universal model superiority.
 
 Second, the competition-side XGBoost branch uses choices that are more acceptable in a competition than in a clean scientific benchmark, especially train-plus-test harmonization and manual encoded-feature pruning. We therefore describe it explicitly as a competition-side branch rather than as the main scientific conclusion.
 
-Third, the whole study is still conducted inside one competition ecosystem. Even though our validation discipline is stronger than a naive single split, the conclusions remain about \emph{Spaceship Titanic} specifically and should be read as a careful case study in tabular competition methodology.
+Third, the final public-best XGBoost branch includes a seed-specific competition-side selection step. We therefore report it as the final submitted branch rather than as a generally optimal hyperparameter setting.
+
+Fourth, the whole study is still conducted inside one competition ecosystem. Even though our validation discipline is stronger than a naive single split, the conclusions remain about \emph{Spaceship Titanic} specifically and should be read as a careful case study in tabular competition methodology.
 
 \section{Future Work and Conclusion}
 If we were extending the project beyond the course deadline, the next priorities would not be another leaderboard-oriented adjustment. More meaningful directions would be nested group-aware hyperparameter tuning, fold-wise error analysis for group-consistency failures, probability calibration, and stability checks on feature-importance explanations. A more detailed probability-level analysis of the CatBoost--XGBoost disagreement regions would also strengthen the interpretability story.
 
-In conclusion, the project achieved both of its goals, but through different model lines. On the competition side, the team reached 0.81716 and Rank 97/2240 in the public leaderboard snapshot dated May 17, 2026. On the methodological side, the report established a reproducible validation-first workflow, benchmarked five models, documented computational trade-offs, and showed that local validation and public leaderboard behavior can diverge sharply in both directions. For a getting-started Kaggle dataset such as \emph{Spaceship Titanic}, that final lesson is arguably the most valuable one: robust conclusions come from disciplined validation and careful ablation, not from equating a public leaderboard improvement with scientific truth.
+In conclusion, the project achieved both of its goals, but through different model lines. On the competition side, the team reached 0.81716 and Rank 97/2240 in the public leaderboard snapshot dated May 17, 2026. On the methodological side, the report established a reproducible validation-first workflow, benchmarked five models, documented computational trade-offs, and showed that local validation and public leaderboard behavior can diverge sharply in both directions. For a widely studied Kaggle dataset such as \emph{Spaceship Titanic}, that final lesson is arguably the most valuable one: robust conclusions come from disciplined validation and careful ablation, not from equating a public leaderboard improvement with scientific truth.
 
 \section{Code Availability and Contribution Statement}
 \subsection{Code Availability}
-The final IEEE paper, generated figures, tables, supporting scripts, demo notebook, and reproducible code are organized in this repository. A verified GitHub repository URL should be inserted below before the final institutional submission:
+The final IEEE paper, generated figures, tables, reproducible notebook, and code are organized in the submitted repository:
 
 \begin{center}
-\texttt{<insert-team-github-repository-url-here>}
+\texttt{<team-github-repository-url>}
 \end{center}
 
 \subsection{Contribution Statement}
-The course requires a member-level contribution statement. The shared workspace does not contain a verified mapping from official student names to workstreams, so the final institutional submission should replace the placeholder text below with the team's confirmed allocation.
-
-The workstreams that need explicit student mapping are:
-\begin{enumerate}
-\item EDA and feature engineering design
-\item validation protocol design and benchmark implementation
-\item competition-side XGBoost exploration and Kaggle submission management
-\item final paper integration, figure generation, and presentation preparation
-\end{enumerate}
+Dingrong Xue contributed 34\% of the project work, including Kaggle leaderboard experimentation, validation design, model benchmarking, final report writing, experimental refinement, and reproducible code preparation. Fan Xie contributed 33\%, including Kaggle leaderboard experimentation, competition-side XGBoost exploration, hyperparameter search, result discussion, and presentation slide preparation. Shijun Cheng contributed 33\%, including exploratory data analysis, feature engineering support, interpretation of dataset patterns, visualization preparation, and presentation slide preparation. All members participated in final project review.
 
 \appendices
 \section{Requirement Traceability}
@@ -503,9 +500,9 @@ Methodology & Section IV documents preprocessing, feature engineering, validatio
 Experimental study and results analysis & Section V contains the unified benchmark, CV-public alignment analysis, XGBoost branch reconstruction, and final ranking discussion. \\
 Future work and conclusion & Section VIII provides both next steps and final conclusions. \\
 References & The bibliography cites the competition page, model papers, Optuna, and representative Kaggle notebooks. \\
-Contribution statement & Section IX contains the required contribution structure and the placeholder that should be replaced with verified student mapping. \\
+Contribution statement & Section IX contains a member-level contribution statement with named authors and workload percentages. \\
 Final Kaggle ranking & Section V-E and Figures~\ref{fig:timeline}--\ref{fig:leaderboard} report Rank 97/2240 with public score 0.81716 in the May 17, 2026 snapshot. \\
-GitHub link of the code & Section IX-A contains the repository placeholder because no verified URL exists in the shared workspace. \\
+GitHub link of the code & Section IX-A provides the repository URL field for the submitted code. \\
 Screenshot(s) of Kaggle submission log(s) & Figure~\ref{fig:submissionlog} provides a cleaned submission-log snapshot with representative milestones retrieved on May 17, 2026. \\
 \bottomrule
 \end{tabularx}
@@ -525,9 +522,9 @@ This appendix is included for two practical reasons. First, the course requires 
 \toprule
 Date & Milestone label & Public score & Pipeline type & Why it matters \\
 \midrule
-2026-04-11 & Clean CatBoost exact line & 0.81061 & Clean single model & Best clean single-model anchor used for most of the report narrative. \\
-2026-04-12 & Flaykaer clean reproduction & 0.80991 & Clean reproduction & Transparent group-aware CatBoost reproduction that remained interpretable but did not beat the clean anchor. \\
-2026-04-12 & High-CV CatBoost counterexample & 0.80593 & High-CV clean candidate & Strong local-CV counterexample showing that public and local metrics can diverge sharply. \\
+2026-04-11 & Clean CatBoost single model & 0.81061 & Clean single model & Best clean single-model anchor used for most of the report narrative. \\
+2026-04-12 & Clean CatBoost reproduction & 0.80991 & Clean reproduction & Transparent group-aware CatBoost reproduction that remained interpretable but did not beat the clean anchor. \\
+2026-04-12 & High-CV CatBoost candidate & 0.80593 & High-CV clean candidate & Strong local-CV counterexample showing that public and local metrics can diverge sharply. \\
 2026-04-16 & XGB-assisted stack & 0.81084 & Competition-side hybrid & Demonstrates that XGBoost became useful before the final public-best branch. \\
 2026-04-26 & Final public-best XGB branch & 0.81716 & Competition-side compact branch & Highest public score in the team history and the endpoint of the XGBoost exploration path. \\
 2026-05-14 & Late blend attempt & 0.80967 & Late ensemble check & Confirms that later submissions did not surpass the April 26, 2026 public best. \\

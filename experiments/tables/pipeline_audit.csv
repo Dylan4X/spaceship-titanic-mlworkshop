@@ -1,5 +1,5 @@
 pipeline,local_metric,local_metric_name,public_score,rank_snapshot,notes
-CatBoost exact,0.8133,5-fold StratifiedKFold,0.81061,238.0,Clean single model; reproduces public PyCaret-style preprocessing without test labels.
-Flaykaer reproduction,0.81422,5-fold GroupKFold,0.80991,,Clean group-aware CatBoost reproduction; interpretable but not leaderboard-best.
-Opamusora clean,0.81905,5-fold GroupKFold,0.80593,,Strong local CV yet poor leaderboard alignment; useful counterexample against over-trusting CV.
-Notebook-inspired XGB,0.80599,5-fold StratifiedGroupKFold,0.81716,97.0,"Best public score, but uses global preprocessing, outlier filtering, manual feature dropping, and KMeansSMOTE."
+Clean CatBoost single model,0.8133,5-fold StratifiedKFold,0.81061,238.0,Clean single model with reproducible preprocessing and no test labels.
+Clean CatBoost reproduction,0.81422,5-fold GroupKFold,0.80991,,Clean group-aware CatBoost reproduction; interpretable but not leaderboard-best.
+High-CV CatBoost candidate,0.81905,5-fold GroupKFold,0.80593,,Strong local CV yet poor leaderboard alignment; useful counterexample against over-trusting CV.
+Public-best XGBoost branch,0.80599,5-fold StratifiedGroupKFold,0.81716,97.0,"Best public score; uses train-test categorical harmonization, manual feature dropping, and KMeansSMOTE."
