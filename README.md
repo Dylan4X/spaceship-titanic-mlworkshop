@@ -5,8 +5,7 @@ Final project repository for Kaggle Spaceship Titanic. Our public-best XGBoost b
 ## Main Files
 
 - `notebooks/demo_081716_xgb.ipynb`: Kaggle demo notebook for the final submission.
-- `notebooks/local_raw_data_demo.ipynb`: local notebook that starts from raw train/test data.
-- `notebooks/local_modeling_demo.ipynb`: local modeling notebook that recomputes CV, ablation, and tuning tables from raw data.
+- `notebooks/local_demo.ipynb`: local classroom notebook with raw-data EDA, CV, ablation, and tuning from raw data.
 - `code/reproduce_081716_xgb.py`: script version of the same pipeline.
 - `code/local_validation_reproduction.py`: consolidated local validation reproduction.
 - `report/final_ieee_paper.pdf`: final report.
@@ -37,23 +36,15 @@ submissions/Submission_XGB_0_81716.csv
 
 Expected prediction counts are approximately `{True: 2285, False: 1992}`.
 
-## Local Raw-Data Demo
+## Local Demo
 
 For a local classroom demo based only on raw Kaggle files, open:
 
 ```text
-notebooks/local_raw_data_demo.ipynb
+notebooks/local_demo.ipynb
 ```
 
-It reads only `data/train.csv` and `data/test.csv`, then recomputes the dataset summary and EDA tables used in the slides.
-
-For the local modeling demo, open:
-
-```text
-notebooks/local_modeling_demo.ipynb
-```
-
-It rebuilds features from `data/train.csv`, then reruns model comparison, feature-family ablation, and a compact XGBoost tuning scan.
+It reads only `data/train.csv` and `data/test.csv`, then recomputes the dataset summary, EDA tables, model comparison, feature-family ablation, and compact XGBoost tuning scan.
 
 ## Local Experiments
 
