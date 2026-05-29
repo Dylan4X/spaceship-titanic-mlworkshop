@@ -5,8 +5,9 @@ Final project repository for Kaggle Spaceship Titanic. Our public-best XGBoost b
 ## Main Files
 
 - `notebooks/demo_081716_xgb.ipynb`: Kaggle demo notebook for the final submission.
+- `notebooks/local_ppt_key_data_demo.ipynb`: local notebook aligned with the PPT key numbers.
 - `code/reproduce_081716_xgb.py`: script version of the same pipeline.
-- `code/run_local_experiments.py`: small local benchmark and ablation runner.
+- `code/local_validation_reproduction.py`: consolidated local validation reproduction.
 - `report/final_ieee_paper.pdf`: final report.
 - `experiments/tables/`: compact evidence tables used by the report.
 
@@ -37,8 +38,16 @@ Expected prediction counts are approximately `{True: 2285, False: 1992}`.
 
 ## Local Experiments
 
-```powershell
-python code\run_local_experiments.py
+For the local classroom demo, open:
+
+```text
+notebooks/local_ppt_key_data_demo.ipynb
 ```
 
-This writes fresh CV summaries to `experiments/tables/local_cv_benchmark.csv` and `experiments/tables/local_feature_ablation.csv`.
+To rerun the heavier validation reproduction script:
+
+```powershell
+python code\local_validation_reproduction.py
+```
+
+This retrains the local validation experiments and writes fresh summaries to `experiments/tables/local_validation_reproduction.csv`.

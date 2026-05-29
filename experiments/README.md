@@ -12,8 +12,8 @@ The report's main experimental coverage is:
 
 The final public-best XGBoost code is in `code/reproduce_081716_xgb.py` and `notebooks/demo_081716_xgb.ipynb`.
 
-To rerun a small local benchmark and feature ablation check:
+To rerun the consolidated local validation experiments from the project code:
 
 ```powershell
-python code\run_local_experiments.py
+python code\local_validation_reproduction.py
 ```
